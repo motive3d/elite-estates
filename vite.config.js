@@ -1,0 +1,9 @@
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  base: '/elite-estates/',
+  plugins: [react()],
+  resolve: { preserveSymlinks: true },
+  build: { chunkSizeWarningLimit: 1200 },
+});

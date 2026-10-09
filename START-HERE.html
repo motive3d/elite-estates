@@ -1,0 +1,48 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ÉLITE ESTATES — Manual Upload Guide</title><style>*{box-sizing:border-box}body{margin:0;background:#f2efe8;color:#101513;font:16px/1.75 Arial,sans-serif}header{background:#101513;color:#f2efe8;padding:55px max(24px,calc((100% - 900px)/2))}header small{color:#b49a70;letter-spacing:3px;font-size:11px}h1,h2{font-family:Georgia,serif;font-weight:normal;line-height:1.2}h1{font-size:48px;max-width:700px}h2{font-size:30px;margin-top:0}main{max-width:950px;margin:auto;padding:45px 24px}section{padding:28px 0;border-bottom:1px solid #10151330}.step{font-size:12px;letter-spacing:2px;color:#7c6747}code{background:#e3e0d7;padding:3px 5px;overflow-wrap:anywhere}pre{padding:24px;background:#101513;color:#f2efe8;overflow:auto;font-size:13px;line-height:1.6}a{color:#263b34}li{margin-bottom:12px}.note{background:#e4e5da;padding:20px;margin-top:20px}details{margin:20px 0}summary{cursor:pointer;font-weight:bold;min-height:44px}footer{font-size:13px;margin-top:35px;color:#62675e}@media(max-width:500px){h1{font-size:37px}h2{font-size:27px}body{font-size:14px}header{padding:35px 24px}}</style><header><small>ÉLITE ESTATES / SIGNATURE EDITION</small><h1>Your website.<br>Ready for its next address.</h1><p>A manual GitHub upload guide. Just Chrome and File Explorer.</p></header><main><p><strong>No terminal, VS Code, Copilot, development tools, or Codex–GitHub connection is required.</strong> GitHub builds and publishes the website for you.</p><section><p class="step">01 / EXTRACT</p><h2>Unpack the project.</h2><p>Save <strong>elite-estates-complete.zip</strong> to your computer. In Windows File Explorer, right-click it, choose <strong>Extract All…</strong>, then <strong>Extract</strong>.</p><p>Open the extracted folder. You should see <code>index.html</code>, <code>package.json</code>, <code>src</code>, <code>public</code>, and <code>.github</code> together. If needed, use <strong>View → Show → Hidden items</strong>.</p></section><section><p class="step">02 / CREATE YOUR REPOSITORY</p><h2>Give the project its home.</h2><p>In Chrome, sign into <a href="https://github.com/new">GitHub and create a new repository</a>.</p><ul><li>Repository name: <strong>elite-estates</strong> — use this exact spelling.</li><li>Visibility: <strong>Public</strong>, to use GitHub Pages with GitHub Free.</li><li>Select <strong>Add a README file</strong>, then create the repository.</li></ul></section><section><p class="step">03 / ENABLE PAGES</p><h2>Let GitHub handle the build.</h2><p>In your repository, choose <strong>Settings → Pages</strong>. Under <strong>Build and deployment → Source</strong>, select <strong>GitHub Actions</strong>.</p><p>The project already includes its deployment workflow. You do not need to configure another template.</p></section><section><p class="step">04 / UPLOAD</p><h2>Upload the contents, including folders.</h2><ol><li>Return to your repository’s <strong>Code</strong> tab.</li><li>Choose <strong>Add file → Upload files</strong>.</li><li>In File Explorer, open the extracted project folder and select <strong>all its contents</strong>. Drag those files and folders into Chrome’s upload area.</li><li>Wait until every file finishes uploading.</li><li>Enter “Add complete ÉLITE ESTATES website” as the commit message and choose <strong>Commit changes</strong> to <code>main</code>. If GitHub requires a new branch, create and merge the pull request in the browser.</li></ol><div class="note"><strong>Check the repository root:</strong> <code>package.json</code> must be directly visible. Do not upload the ZIP or an enclosing project folder. Confirm <code>.github/workflows/deploy.yml</code> is present.</div><details><summary>If the .github folder was not uploaded</summary><p>Choose <strong>Add file → Create new file</strong>. Enter <code>.github/workflows/deploy.yml</code> as the filename. Copy the entire workflow below into GitHub’s editor, then commit to <code>main</code>. The workflow is also inside your extracted project and can be opened in Notepad.</p><pre>name: Deploy ÉLITE ESTATES to GitHub Pages
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: &#x27;22&#x27;
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Build production website
+        run: npm run build
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload production website
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v4
+</pre></details></section><section><p class="step">05 / WATCH THE DEPLOYMENT</p><h2>Wait for two green checks.</h2><p>Open the repository’s <strong>Actions</strong> tab. Select <strong>Deploy ÉLITE ESTATES to GitHub Pages</strong>. Both <strong>build</strong> and <strong>deploy</strong> must finish successfully.</p><p>If no run starts, select the workflow, choose <strong>Run workflow</strong>, select <code>main</code>, and click <strong>Run workflow</strong>. If an earlier run failed because Pages was not yet enabled, enable it and run the workflow again.</p></section><section><p class="step">06 / VISIT YOUR SITE</p><h2>Your live address.</h2><p>Open <strong>Settings → Pages → Visit site</strong>, or click the deployment URL in the successful Actions run.</p><p><code>https://USERNAME.github.io/elite-estates/</code></p><p>Replace <strong>USERNAME</strong> with your actual GitHub username. Detail links include a hash, for example <code>/elite-estates/#/properties/azure-villa</code>. This is intentional and supports reliable reloads on GitHub Pages.</p></section><section><h2>A few useful details.</h2><ul><li><strong>Opening index.html locally:</strong> the React source requires a build. Use the live GitHub Pages URL; this guide is the file you can open directly in Chrome.</li><li><strong>Contact form:</strong> a clearly labeled portfolio demo. It creates a local draft and does not send a message.</li><li><strong>Villa:</strong> choose Explore in 3D, then enable the hand control to drag or pinch. Pause controls to scroll over the viewer.</li><li><strong>Imagery:</strong> licensed stock inspiration, not photos of the fictional listings. Credits and font licenses are included.</li><li><strong>Verification:</strong> read QA-REPORT.md for tests and limitations. Actual publication on your GitHub account happens only after your upload.</li></ul></section><footer><p>Official references: <a href="https://docs.github.com/en/repositories/working-with-files/managing-files/adding-a-file-to-a-repository">GitHub browser upload</a> · <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages">Pages workflows</a></p><p>ÉLITE ESTATES — a fictional luxury real estate portfolio experience.</p></footer></main></html>
